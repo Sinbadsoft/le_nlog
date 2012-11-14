@@ -134,6 +134,9 @@ namespace NLog.Targets
             set { m_Token = value; }
         }
 
+        /** Option to set token config key in App Settings. If not set LogentriesTarget.CONFIG_TOKEN is used. */
+        public string TokenConfigKey { get; set; }
+
         /** HTTP PUT Flag */
         [RequiredParameter]
         public bool HttpPut { get; set; }
@@ -284,9 +287,11 @@ namespace NLog.Targets
                 if (checkValidUUID(this.m_Token))
                     return true;
 
-                if (appSettings.AllKeys.Contains(CONFIG_TOKEN) && checkValidUUID(appSettings[CONFIG_TOKEN]))
+                var configToken = string.IsNullOrWhiteSpace(this.TokenConfigKey) ? CONFIG_TOKEN : this.TokenConfigKey;
+
+                if (appSettings.AllKeys.Contains(configToken) && checkValidUUID(appSettings[configToken]))
                 {
-                    this.m_Token = appSettings[CONFIG_TOKEN];
+                    this.m_Token = appSettings[configToken];
                     return true;
                 }
 
